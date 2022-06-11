@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Search</title>
+</head>
+<body>
+    <h1>알라딘</h1>
+    <input id="search"" type="text" placeholder="도서를 입력해주세요." />
+    <button id="result">결과</button>
+    <div></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function(){
+            var pageNum = 1;
+
+            $("#result").click(function () {
+                $("div").html("");
+
+                $.ajax({
+                    method: "GET",
+                    url: "https://dapi.kakao.com/v3/search/book?target=title",
+                    data: { query: $("#search").val(), page: pageNum },
+                    headers: { Authorization: "KakaoAK ecb5c7fd0a5ffdcd03d0e2213e04775c" }
+                })
+                .done(function (msg) {
+                    for (var i = 0; i < 10; i++){
+                        $("div").append("<h2><a href='"+ msg.documents[i].url +"'>" + msg.documents[i].title + "</a></h2>");
+                        $("div").append("<strong>저자:</strong> " + msg.documents[i].authors + "<br>");
+                        $("div").append("<strong>출판사:</strong> " + msg.documents[i].publisher + "<br>");
+                        $("div").append("<strong>요약:</strong> " + msg.documents[i].contents + "...<br>");
+                        $("div").append("<img src='" + msg.documents[i].thumbnail + "'/><br>");
+                    }
+                });
+            })
+        })
+    </script>
+</body>
+</html>
